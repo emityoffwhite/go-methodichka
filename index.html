@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Методичка по Go</title>
+  <style>
+    :root {
+      --bg: #fff;
+      --text: #222;
+      --accent: #007acc;
+      --border: #ddd;
+      --hover: #f5f5f5;
+      --shadow: rgba(0,0,0,0.1);
+    }
+
+    [data-theme="dark"] {
+      --bg: #121212;
+      --text: #eee;
+      --accent: #4d90fe;
+      --border: #333;
+      --hover: #1e1e1e;
+      --shadow: rgba(0,0,0,0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: var(--hover);
+      border-radius: 8px;
+      box-shadow: 0 2px 5px var(--shadow);
+    }
+
+    h1 {
+      color: var(--accent);
+      font-size: 2.5rem;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      z-index: 100;
+    }
+
+    .search {
+      margin: 20px 0;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--hover);
+    }
+
+    .search input {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text);
+    }
+
+    .section {
+      margin: 20px 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px var(--shadow);
+    }
+
+    .section-header {
+      background: var(--hover);
+      padding: 15px 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: background 0.2s;
+    }
+
+    .section-header:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .section-content {
+      padding: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+      background: var(--bg);
+    }
+
+    .section.open .section-content {
+      max-height: 5000px;
+      padding: 20px;
+    }
+
+    .section-content pre {
+      background: var(--hover);
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 10px 0;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+
+    .section-content code {
+      background: var(--hover);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    .section-content ul, .section-content ol {
+      margin: 10px 0 10px 20px;
+    }
+
+    .section-content li {
+      margin: 5px 0;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .section-header {
+        padding: 12px 15px;
+        font-size: 1rem;
+      }
+      .section-content {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle" onclick="toggleTheme()">Тёмная тема</button>
+
+  <header>
+    <h1>📚 Методичка по Go — от А до Я</h1>
+    <p>Кликни по теме, чтобы раскрыть полное описание</p>
+  </header>
+
+  <div class="search">
+    <input type="text" id="searchInput" placeholder="Поиск по темам..." oninput="searchContent()">
+  </div>
+
+  <!-- Разделы -->
+  <div class="section" id="syntax">
+    <div class="section-header" onclick="toggleSection('syntax')">
+      💬 Основы синтаксиса
+      <span>▶</span>
+    </div>
+    <div class="section-content">
+      <h2>Основы синтаксиса Go</h2>
+      <p>Go — это статически типизированный язык с простым синтаксисом.</p>
+
+      <h3>Переменные</h3>
+      <pre><code>var x int = 10
+y := 20 // короткое объявление</code></pre>
+
+      <h3>Типы данных</h3>
+      <ul>
+        <li><code>int, int8, int16, int32, int64</code></li>
+        <li><code>float32, float64</code></li>
+        <li><code>bool</code></li>
+        <li><code>string</code></li>
+        <li><code>array, slice, map</code></li>
+      </ul>
+
+      <h3>Операторы</h3>
+      <p>Арифметические: <code>+ - * / %</code><br>
+         Логические: <code>&& || !</code><br>
+         Сравнения: <code>== != < > <= >=</code></p>
+    </div>
+  </div>
+
+  <div class="section" id="functions">
+    <div class="section-header" onclick="toggleSection('functions')">
+      🧩 Функции в Go
+      <span>▶</span>
+    </div>
+    <div class="section-content">
+      <h2>Функции в Go</h2>
+      <p>Функции — основа программирования в Go. Они могут возвращать несколько значений.</p>
+
+      <h3>Объявление</h3>
+      <pre><code>func add(a, b int) int {
+    return a + b
+}</code></pre>
+
+      <h3>Множественный возврат</h3>
+      <pre><code>func divide(a, b float64) (float64, error) {
+    if b == 0 {
+        return 0, errors.New("деление на ноль")
+    }
+    return a / b, nil
+}</code></pre>
+
+      <h3>Анонимные функции</h3>
+      <pre><code>greet := func(name string) {
+    fmt.Println("Привет,", name)
+}
+greet("Андрей")</code></pre>
+
+      <h3>defer, panic, recover</h3>
+      <pre><code>func main() {
+    defer fmt.Println("Завершение")
+    panic("Ошибка!")
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section" id="structs">
+    <div class="section-header" onclick="toggleSection('structs')">
+      🧱 Структуры и методы
+      <span>▶</span>
+    </div>
+    <div class="section-content">
+      <h2>Структуры и методы</h2>
+      <p>Структуры — пользовательские типы. Методы — функции, привязанные к структуре.</p>
+
+      <h3>Объявление структуры</h3>
+      <pre><code>type Person struct {
+    Name string
+    Age  int
+}</code></pre>
+
+      <h3>Методы</h3>
+      <pre><code>func (p Person) Greet() {
+    fmt.Printf("Привет, меня зовут %s\n", p.Name)
+}</code></pre>
+
+      <h3>Наследование через композицию</h3>
+      <pre><code>type Employee struct {
+    Person
+    Position string
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section" id="interfaces">
+    <div class="section-header" onclick="toggleSection('interfaces')">
+      🔌 Интерфейсы
+      <span>▶</span>
+    </div>
+    <div class="section-content">
+      <h2>Интерфейсы</h2>
+      <p>Интерфейсы определяют поведение, а не реализацию.</p>
+
+      <h3>Объявление</h3>
+      <pre><code>type Speaker interface {
+    Speak() string
+}</code></pre>
+
+      <h3>Реализация</h3>
+      <pre><code>type Dog struct{}
+
+func (d Dog) Speak() string {
+    return "Гав!"
+}</code></pre>
+
+      <h3>Пустой интерфейс</h3>
+      <p><code>interface{}</code> — любой тип.</p>
+    </div>
+  </div>
+
+  <div class="section" id="concurrency">
+    <div class="section-header" onclick="toggleSection('concurrency')">
+      ⚡ Параллелизм: Goroutines и Channels
+      <span>▶</span>
+    </div>
+    <div class="section-content">
+      <h2>Параллелизм в Go</h2>
+      <p>Go предоставляет мощные инструменты для параллельного выполнения.</p>
+
+      <h3>Goroutines</h3>
+      <pre><code>go func() {
+    fmt.Println("Выполняется в фоне")
+}()</code></pre>
+
+      <h3>Channels</h3>
+      <pre><code>ch := make(chan int)
+go func() { ch <- 42 }()
+value := <-ch</code></pre>
+
+      <h3>select</h3>
+      <pre><code>select {
+case msg := <-ch1:
+    fmt.Println(msg)
+case msg := <-ch2:
+    fmt.Println(msg)
+default:
+    fmt.Println("Нет данных")
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section" id="packages">
+    <div class="section-header" onclick="toggleSection('packages')">
+      📦 Пакеты и модули
+      <span>▶</span>
+    </div>
+    <div class="section-content">
+      <h2>Пакеты и модули</h2>
+      <p>Go использует пакеты для организации кода.</p>
+
+      <h3>Импорт</h3>
+      <pre><code>import (
+    "fmt"
+    "math/rand"
+)</code></pre>
+
+      <h3>Создание своего пакета</h3>
+      <pre><code>// В файле mypkg/mypkg.go
+package mypkg
+
+func Hello() string {
+    return "Привет из пакета!"
+}</code></pre>
+
+      <h3>Модули</h3>
+      <pre><code>go mod init github.com/username/myproject
+go mod tidy</code></pre>
+    </div>
+  </div>
+
+  <div class="section" id="postgresql">
+    <div class="section-header" onclick="toggleSection('postgresql')">
+      🐘 PostgreSQL и Go
+      <span>▶</span>
+    </div>
+    <div class="section-content">
+      <h2>Работа с PostgreSQL</h2>
+      <p>Используй библиотеку <code>github.com/lib/pq</code>.</p>
+
+      <h3>Подключение</h3>
+      <pre><code>db, err := sql.Open("postgres", "host=localhost port=5432 user=postgres password=pass dbname=test sslmode=disable")
+if err != nil {
+    log.Fatal(err)
+}</code></pre>
+
+      <h3>Запросы</h3>
+      <pre><code>rows, err := db.Query("SELECT name FROM users")
+for rows.Next() {
+    var name string
+    rows.Scan(&name)
+    fmt.Println(name)
+}</code></pre>
+
+      <h3>Подготовленные запросы</h3>
+      <pre><code>stmt, _ := db.Prepare("INSERT INTO users(name) VALUES($1)")
+stmt.Exec("Андрей")</code></pre>
+    </div>
+  </div>
+
+  <div class="section" id="rest">
+    <div class="section-header" onclick="toggleSection('rest')">
+      🌐 REST API в Go
+      <span>▶</span>
+    </div>
+    <div class="section-content">
+      <h2>REST API</h2>
+      <p>Можно использовать стандартную библиотеку <code>net/http</code> или фреймворки (Gin, Echo).</p>
+
+      <h3>Пример с net/http</h3>
+      <pre><code>http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+    w.Write([]byte("Hello, World!"))
+})
+http.ListenAndServe(":8080", nil)</code></pre>
+
+      <h3>Маршрутизация</h3>
+      <pre><code>http.HandleFunc("/users", getUsers)
+http.HandleFunc("/users/", getUserByID)</code></pre>
+
+      <h3>JSON</h3>
+      <pre><code>type User struct {
+    ID   int    `json:"id"`
+    Name string `json:"name"`
+}
+
+user := User{ID: 1, Name: "Андрей"}
+json.NewEncoder(w).Encode(user)</code></pre>
+    </div>
+  </div>
+
+  <div class="section" id="best-practices">
+    <div class="section-header" onclick="toggleSection('best-practices')">
+      🏆 Best Practices, SOLID, DI
+      <span>▶</span>
+    </div>
+    <div class="section-content">
+      <h2>Лучшие практики</h2>
+      <p>Go поощряет простоту и читаемость.</p>
+
+      <h3>SOLID в Go</h3>
+      <ul>
+        <li><strong>SRP</strong> — одна ответственность</li>
+        <li><strong>OCP</strong> — открыт для расширения, закрыт для изменения</li>
+        <li><strong>LSP</strong> — подтипы должны быть взаимозаменяемы</li>
+        <li><strong>ISP</strong> — маленькие интерфейсы</li>
+        <li><strong>DIP</strong> — зависимость от абстракций</li>
+      </ul>
+
+      <h3>Dependency Injection</h3>
+      <pre><code>type Service interface {
+    DoSomething()
+}
+
+type MyService struct{}
+
+func (m MyService) DoSomething() {}
+
+func NewHandler(s Service) Handler {
+    return Handler{service: s}
+}</code></pre>
+
+      <h3>Тестирование</h3>
+      <pre><code>func TestAdd(t *testing.T) {
+    result := add(2, 3)
+    if result != 5 {
+        t.Errorf("Ожидалось 5, получено %d", result)
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section" id="docker">
+    <div class="section-header" onclick="toggleSection('docker')">
+      🐳 Docker и Go
+      <span>▶</span>
+    </div>
+    <div class="section-content">
+      <h2>Docker и Go</h2>
+      <p>Go идеально подходит для контейнеризации.</p>
+
+      <h3>Dockerfile</h3>
+      <pre><code>FROM golang:1.22-alpine AS builder
+WORKDIR /app
+COPY . .
+RUN go build -o main .
+
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=builder /app/main .
+CMD ["./main"]</code></pre>
+
+      <h3>Сборка и запуск</h3>
+      <pre><code>docker build -t my-go-app .
+docker run -p 8080:8080 my-go-app</code></pre>
+    </div>
+  </div>
+
+  <script>
+    // Переключение темы
+    function toggleTheme() {
+      const body = document.body;
+      const button = document.querySelector('.theme-toggle');
+      if (body.getAttribute('data-theme') === 'dark') {
+        body.removeAttribute('data-theme');
+        button.textContent = 'Тёмная тема';
+      } else {
+        body.setAttribute('data-theme', 'dark');
+        button.textContent = 'Светлая тема';
+      }
+    }
+
+    // Раскрытие/скрытие секции
+    function toggleSection(id) {
+      const section = document.getElementById(id);
+      const isOpen = section.classList.contains('open');
+      
+      // Закрываем все секции
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('open'));
+      
+      // Если была закрыта — открываем
+      if (!isOpen) {
+        section.classList.add('open');
+        // Прокрутка к секции
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Поиск по содержимому
+    function searchContent() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const sections = document.querySelectorAll('.section');
+
+      sections.forEach(section => {
+        const title = section.querySelector('.section-header').textContent.toLowerCase();
+        const content = section.querySelector('.section-content').textContent.toLowerCase();
+        
+        if (title.includes(query) || content.includes(query)) {
+          section.style.display = 'block';
+        } else {
+          section.style.display = 'none';
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
